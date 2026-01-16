@@ -1,6 +1,5 @@
 import streamlit as st
 from pathlib import Path
-from streamlit_autorefresh import st_autorefresh
 
 # -------------------------------------------------
 # PAGE CONFIG
@@ -29,16 +28,15 @@ bg_images = [
 ]
 
 # -------------------------------------------------
-# BACKGROUND SLIDESHOW STATE
+# BACKGROUND ROTATION (SAFE)
 # -------------------------------------------------
 if "bg_index" not in st.session_state:
     st.session_state.bg_index = 0
 
 bg_img = bg_images[st.session_state.bg_index % len(bg_images)]
-st.session_state.bg_index += 1
 
-# Auto refresh every 4 seconds (SAFE METHOD)
-st_autorefresh(interval=4000, key="bg_refresh")
+# advance index ONLY on user interaction or reload
+st.session_state.bg_index = (st.session_state.bg_index + 1) % len(bg_images)
 
 # -------------------------------------------------
 # BACKGROUND CSS
@@ -53,17 +51,24 @@ st.markdown(
         background-repeat: no-repeat;
     }}
     .card {{
-        background: rgba(255, 255, 255, 0.88);
+        background: rgba(255,255,255,0.88);
         padding: 25px;
         border-radius: 15px;
         max-width: 900px;
         margin: auto;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }}
     </style>
     """,
     unsafe_allow_html=True
 )
+
+# -------------------------------------------------
+# MANUAL BACKGROUND CHANGE BUTTON (CLOUD SAFE)
+# -------------------------------------------------
+st.markdown("<br>", unsafe_allow_html=True)
+if st.button("🔄 Change Background"):
+    st.rerun()
 
 # -------------------------------------------------
 # PROFILE CARD
