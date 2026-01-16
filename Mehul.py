@@ -103,7 +103,8 @@ st.divider()
 # -------------------------------------------------
 st.markdown("### 🏡 Home Address")
 st.markdown("""
-Village / City: —  
+Flat Apartment: —  FlatNo. A-a412, bManglamc Anhchial,Kalwar Road
+Village / City: —  Jhotwara
 District: Jaipur  
 State: Rajasthan  
 PIN Code: 302012  
