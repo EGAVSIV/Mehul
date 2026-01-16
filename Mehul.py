@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 from pathlib import Path
 
 # -------------------------------------------------
@@ -7,39 +8,85 @@ from pathlib import Path
 st.set_page_config(
     page_title="Mehul Yadav Page",
     page_icon="🧾",
-    layout="centered"
+    layout="wide"
 )
 
 # -------------------------------------------------
-# HEADER
+# IMAGE PATHS
+# -------------------------------------------------
+profile_img = Path("images/IMG1.jpeg")
+
+bg_images = [
+    "images/IMG2.jpeg",
+    "images/IMG3.jpeg",
+    "images/IMG4.jpeg",
+    "images/IMG5.jpeg",
+    "images/IMG6.jpeg",
+    "images/IMG7.jpeg",
+    "images/IMG8.jpeg",
+    "images/IMG9.jpeg",
+    "images/IMG10.JPEG",
+]
+
+# -------------------------------------------------
+# BACKGROUND SLIDESHOW LOGIC
+# -------------------------------------------------
+if "bg_index" not in st.session_state:
+    st.session_state.bg_index = 0
+
+bg_img = bg_images[st.session_state.bg_index % len(bg_images)]
+
+st.session_state.bg_index += 1
+
+# Auto refresh every 4 seconds
+time.sleep(4)
+st.rerun()
+
+# -------------------------------------------------
+# BACKGROUND CSS
 # -------------------------------------------------
 st.markdown(
-    """
-    <h2 style="text-align:center;">🧾 Mehul Yadav – Personal Profile</h2>
-    <p style="text-align:center;">(Shareable Personal Information Page)</p>
-    <hr>
+    f"""
+    <style>
+    .stApp {{
+        background-image: url("{bg_img}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+    .card {{
+        background: rgba(255,255,255,0.85);
+        padding: 25px;
+        border-radius: 15px;
+        max-width: 900px;
+        margin: auto;
+    }}
+    </style>
     """,
     unsafe_allow_html=True
 )
 
 # -------------------------------------------------
-# IMAGE SAFE LOADER
+# PROFILE CARD
 # -------------------------------------------------
-img_path = Path("assets/mehul.jpg")
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+st.markdown(
+    "<h2 style='text-align:center;'>🧾 Mehul Yadav – Personal Profile</h2>",
+    unsafe_allow_html=True
+)
 
 col1, col2 = st.columns([1, 2])
 
 with col1:
-    if img_path.exists():
-        st.image(str(img_path), width=160, caption="Mehul Yadav")
+    if profile_img.exists():
+        st.image(str(profile_img), width=180, caption="Mehul Yadav")
     else:
-        st.warning("⚠ Image not found. Please check file name & path.")
+        st.warning("Profile image not found")
 
 with col2:
     st.markdown("""
 **Full Name:** Mehul Yadav  
-**Father’s Name:** —  
-**Date of Birth:** —  
 **Gender:** Male  
 **Blood Group:** O+  
 **Nationality:** Indian  
@@ -47,11 +94,7 @@ with col2:
 
 st.divider()
 
-# -------------------------------------------------
-# ADDRESS
-# -------------------------------------------------
 st.markdown("### 🏡 Home Address")
-
 st.markdown("""
 Village / City: —  
 District: —  
@@ -61,43 +104,24 @@ PIN Code: —
 
 st.divider()
 
-# -------------------------------------------------
-# EDUCATION
-# -------------------------------------------------
 st.markdown("### 🏫 Education")
-
 st.markdown("""
 School Name: —  
 Board: —  
-Class / Qualification: —  
+Qualification: —  
 """)
 
 st.divider()
 
-# -------------------------------------------------
-# CONTACT
-# -------------------------------------------------
-st.markdown("### 📞 Contact Information")
-
+st.markdown("### 📞 Contact")
 st.markdown("""
 Mobile: —  
 Email: —  
 """)
 
-st.divider()
-
-# -------------------------------------------------
-# DECLARATION
-# -------------------------------------------------
-st.markdown("### 📌 Declaration")
-
-st.markdown("""
-This page is created for sharing basic personal information with friends.
-""")
-
-st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # -------------------------------------------------
 # FOOTER
 # -------------------------------------------------
-st.caption("Created using Streamlit | Shareable Profile Page")
+st.caption("Shareable Profile Page | Built with Streamlit")
