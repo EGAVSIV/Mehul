@@ -97,26 +97,26 @@ st.divider()
 st.markdown("### 🏡 Home Address")
 st.markdown("""
 Village / City: —  
-District: —  
-State: —  
-PIN Code: —  
+District: —  JaiPur
+State: —  Raasthan
+PIN Code: —  302012
 """)
 
 st.divider()
 
 st.markdown("### 🏫 Education")
 st.markdown("""
-School Name: —  
-Board: —  
-Qualification: —  
+School Name: —  JPHS, Chitrakoot
+Board: —  CBSE
+Qualification: —  4Th-C
 """)
 
 st.divider()
 
 st.markdown("### 📞 Contact")
 st.markdown("""
-Mobile: —  
-Email: —  
+Mobile: —  9829004534
+Email: —  yadav.gauravsingh@gmail.com
 """)
 
 st.markdown("</div>", unsafe_allow_html=True)
