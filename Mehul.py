@@ -14,10 +14,26 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# IMAGE PATHS
+# PROFILE DATA (MULTIPLE PAGES)
 # -------------------------------------------------
-profile_img = Path("images/IMG7.jpeg")
+profiles = {
+    "Mehul Yadav": {
+        "photo": "images/IMG7.jpeg",
+        "email": "mehul19823.20@jphschool.com"
+    },
+    "Friend Profile": {
+        "photo": "images/IMG8.jpeg",
+        "email": "friend@email.com"
+    }
+}
 
+selected_profile = st.sidebar.selectbox("👤 Select Profile", profiles.keys())
+profile_img = Path(profiles[selected_profile]["photo"])
+email = profiles[selected_profile]["email"]
+
+# -------------------------------------------------
+# TILE BACKGROUND IMAGES
+# -------------------------------------------------
 tile_images = [
     "images/IMG2.jpeg",
     "images/IMG3.jpeg",
@@ -29,40 +45,55 @@ tile_images = [
     "images/IMG10.jpeg",
 ]
 
-# Create CSS background using multiple images
 bg_css = ", ".join([f'url("{img}")' for img in tile_images])
 
 # -------------------------------------------------
-# BACKGROUND TILE CSS
+# BACKGROUND TILE CSS (BLUR + B&W + HOVER ZOOM)
 # -------------------------------------------------
 st.markdown(
     f"""
     <style>
     .stApp {{
         background-image: {bg_css};
-        background-size: 250px 250px;
+        background-size: 240px 240px;
         background-repeat: repeat;
-        animation: fadeIn 1.2s ease-in-out;
+        filter: grayscale(100%);
     }}
 
-    @keyframes fadeIn {{
-        from {{ opacity: 0.2; }}
-        to {{ opacity: 1; }}
+    .stApp::before {{
+        content: "";
+        position: fixed;
+        inset: 0;
+        backdrop-filter: blur(6px);
+        z-index: -1;
     }}
 
     .card {{
-        background: rgba(255,255,255,0.92);
-        padding: 25px;
-        border-radius: 15px;
+        background: linear-gradient(135deg, #ffffff, #e8f0ff);
+        padding: 30px;
+        border-radius: 18px;
         max-width: 900px;
         margin: auto;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        animation: fadeIn 1s ease-in-out;
     }}
 
-    /* 📱 Mobile */
+    @keyframes fadeIn {{
+        from {{ opacity: 0; transform: translateY(10px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
+
+    img {{
+        transition: transform 0.4s ease;
+    }}
+
+    img:hover {{
+        transform: scale(1.08);
+    }}
+
     @media (max-width: 768px) {{
         .card {{
-            padding: 18px;
+            padding: 20px;
             margin: 10px;
         }}
     }}
@@ -77,7 +108,7 @@ st.markdown(
 st.markdown('<div class="card">', unsafe_allow_html=True)
 
 st.markdown(
-    "<h2 style='text-align:center;'>🧾 Mehul Yadav – Personal Profile</h2>",
+    f"<h2 style='text-align:center;'>🧾 {selected_profile} – Personal Profile</h2>",
     unsafe_allow_html=True
 )
 
@@ -85,11 +116,11 @@ col1, col2 = st.columns([1, 2])
 
 with col1:
     if profile_img.exists():
-        st.image(str(profile_img), width=160, caption="Mehul Yadav")
+        st.image(str(profile_img), width=170, caption=selected_profile)
 
 with col2:
-    st.markdown("""
-**Full Name:** Mehul Yadav  
+    st.markdown(f"""
+**Full Name:** {selected_profile}  
 **Gender:** Male  
 **Blood Group:** O+  
 **Nationality:** Indian  
@@ -97,9 +128,6 @@ with col2:
 
 st.divider()
 
-# -------------------------------------------------
-# ADDRESS
-# -------------------------------------------------
 st.markdown("### 🏡 Home Address")
 st.markdown("""
 Flat No. A-412, Manglam Anchal  
@@ -109,9 +137,6 @@ Jaipur, Rajasthan – 302012
 
 st.divider()
 
-# -------------------------------------------------
-# EDUCATION
-# -------------------------------------------------
 st.markdown("### 🏫 Education")
 st.markdown("""
 School Name: JPHS, Chitrakoot  
@@ -121,13 +146,10 @@ Class: 4th-C
 
 st.divider()
 
-# -------------------------------------------------
-# CONTACT
-# -------------------------------------------------
 st.markdown("### 📞 Contact")
-st.markdown("""
+st.markdown(f"""
 Mobile: 9829004534  
-Email: mehul19823.20@jphschool.com  
+Email: {email}  
 """)
 
 st.markdown("</div>", unsafe_allow_html=True)
@@ -141,13 +163,13 @@ def generate_pdf():
     w, h = A4
 
     c.setFont("Helvetica-Bold", 16)
-    c.drawCentredString(w / 2, h - 50, "Mehul Yadav – Personal Profile")
+    c.drawCentredString(w / 2, h - 50, f"{selected_profile} – Personal Profile")
 
     c.setFont("Helvetica", 12)
     y = h - 100
 
     lines = [
-        "Full Name: Mehul Yadav",
+        f"Name: {selected_profile}",
         "Gender: Male",
         "Blood Group: O+",
         "Nationality: Indian",
@@ -155,15 +177,14 @@ def generate_pdf():
         "Address:",
         "Flat No. A-412, Manglam Anchal",
         "Kalwar Road, Jhotwara",
-        "Jaipur, Rajasthan – 302012",
+        "Jaipur – 302012",
         "",
         "Education:",
         "JPHS, Chitrakoot (CBSE)",
         "Class: 4th-C",
         "",
         "Contact:",
-        "Mobile: 9829004534",
-        "Email: mehul19823.20@jphschool.com",
+        f"Email: {email}",
     ]
 
     for line in lines:
@@ -178,11 +199,11 @@ def generate_pdf():
 st.download_button(
     "📄 Download Profile PDF",
     data=generate_pdf(),
-    file_name="Mehul_Yadav_Profile.pdf",
+    file_name=f"{selected_profile.replace(' ', '_')}_Profile.pdf",
     mime="application/pdf"
 )
 
 # -------------------------------------------------
 # FOOTER
 # -------------------------------------------------
-st.caption("Tiled Image Background | Shareable Profile Page | Streamlit Cloud Ready")
+st.caption("Blurred Tile Background • Multi Profile • Streamlit Cloud Ready")
