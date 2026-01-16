@@ -39,7 +39,7 @@ bg_img = bg_images[st.session_state.bg_index % len(bg_images)]
 st.session_state.bg_index += 1
 
 # Auto refresh every 4 seconds
-time.sleep(4)
+time.sleep(400)
 st.rerun()
 
 # -------------------------------------------------
