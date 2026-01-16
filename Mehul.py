@@ -3,6 +3,7 @@ from pathlib import Path
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+import qrcode
 
 # -------------------------------------------------
 # PAGE CONFIG
@@ -14,25 +15,52 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# PROFILE DATA (MULTIPLE PAGES)
+# DEFAULT PROFILES (ADMIN CAN ADD MORE)
 # -------------------------------------------------
-profiles = {
-    "Mehul Yadav": {
-        "photo": "images/IMG7.jpeg",
-        "email": "mehul19823.20@jphschool.com"
-    },
-    "Friend Profile": {
-        "photo": "images/IMG8.jpeg",
-        "email": "friend@email.com"
+if "profiles" not in st.session_state:
+    st.session_state.profiles = {
+        "Mehul Yadav": {
+            "photo": "images/IMG7.jpeg",
+            "email": "mehul19823.20@jphschool.com",
+            "mobile": "9829004534"
+        }
     }
-}
 
-selected_profile = st.sidebar.selectbox("👤 Select Profile", profiles.keys())
-profile_img = Path(profiles[selected_profile]["photo"])
-email = profiles[selected_profile]["email"]
+profiles = st.session_state.profiles
 
 # -------------------------------------------------
-# TILE BACKGROUND IMAGES
+# SIDEBAR – PROFILE SELECT
+# -------------------------------------------------
+st.sidebar.title("👤 Profiles")
+selected_profile = st.sidebar.selectbox("Select Profile", profiles.keys())
+
+profile = profiles[selected_profile]
+profile_img = Path(profile["photo"])
+
+# -------------------------------------------------
+# ADMIN PANEL (ADD PROFILE)
+# -------------------------------------------------
+st.sidebar.divider()
+st.sidebar.subheader("🔐 Admin Panel")
+
+with st.sidebar.expander("➕ Add New Profile"):
+    name = st.text_input("Name")
+    photo = st.text_input("Photo path (images/xxx.jpeg)")
+    email = st.text_input("Email")
+    mobile = st.text_input("Mobile")
+
+    if st.button("Add Profile"):
+        if name:
+            profiles[name] = {
+                "photo": photo,
+                "email": email,
+                "mobile": mobile
+            }
+            st.success("Profile added (session only)")
+            st.rerun()
+
+# -------------------------------------------------
+# TILE BACKGROUND (BLUR + B/W)
 # -------------------------------------------------
 tile_images = [
     "images/IMG2.jpeg",
@@ -47,9 +75,6 @@ tile_images = [
 
 bg_css = ", ".join([f'url("{img}")' for img in tile_images])
 
-# -------------------------------------------------
-# BACKGROUND TILE CSS (BLUR + B&W + HOVER ZOOM)
-# -------------------------------------------------
 st.markdown(
     f"""
     <style>
@@ -75,12 +100,6 @@ st.markdown(
         max-width: 900px;
         margin: auto;
         box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-        animation: fadeIn 1s ease-in-out;
-    }}
-
-    @keyframes fadeIn {{
-        from {{ opacity: 0; transform: translateY(10px); }}
-        to {{ opacity: 1; transform: translateY(0); }}
     }}
 
     img {{
@@ -89,13 +108,6 @@ st.markdown(
 
     img:hover {{
         transform: scale(1.08);
-    }}
-
-    @media (max-width: 768px) {{
-        .card {{
-            padding: 20px;
-            margin: 10px;
-        }}
     }}
     </style>
     """,
@@ -128,38 +140,56 @@ with col2:
 
 st.divider()
 
-st.markdown("### 🏡 Home Address")
-st.markdown("""
-Flat No. A-412, Manglam Anchal  
-Kalwar Road, Jhotwara  
-Jaipur, Rajasthan – 302012  
-""")
-
-st.divider()
-
-st.markdown("### 🏫 Education")
-st.markdown("""
-School Name: JPHS, Chitrakoot  
-Board: CBSE  
-Class: 4th-C  
-""")
-
-st.divider()
-
 st.markdown("### 📞 Contact")
 st.markdown(f"""
-Mobile: 9829004534  
-Email: {email}  
+Mobile: {profile["mobile"]}  
+Email: {profile["email"]}  
 """)
+
+# -------------------------------------------------
+# QR CODE PER PROFILE
+# -------------------------------------------------
+st.subheader("🔳 Share Profile via QR")
+
+profile_url = f"https://share.streamlit.app/{selected_profile.replace(' ', '_')}"
+qr = qrcode.make(profile_url)
+
+qr_buf = BytesIO()
+qr.save(qr_buf, format="PNG")
+qr_buf.seek(0)
+
+st.image(qr_buf, width=150)
+st.caption("Scan to open profile")
+
+# -------------------------------------------------
+# WHATSAPP SHARE
+# -------------------------------------------------
+whatsapp_text = f"Check out {selected_profile}'s profile: {profile_url}"
+wa_link = f"https://wa.me/?text={whatsapp_text.replace(' ', '%20')}"
+
+st.markdown(f"[📲 Share on WhatsApp]({wa_link})", unsafe_allow_html=True)
+
+# -------------------------------------------------
+# PHOTO GALLERY MODAL
+# -------------------------------------------------
+st.subheader("🖼 Photo Gallery")
+
+with st.expander("Open Gallery"):
+    cols = st.columns(3)
+    gallery = tile_images + [profile["photo"]]
+
+    for i, img in enumerate(gallery):
+        with cols[i % 3]:
+            st.image(img, use_container_width=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
 # -------------------------------------------------
-# PDF GENERATION
+# PDF DOWNLOAD
 # -------------------------------------------------
 def generate_pdf():
-    buffer = BytesIO()
-    c = canvas.Canvas(buffer, pagesize=A4)
+    buf = BytesIO()
+    c = canvas.Canvas(buf, pagesize=A4)
     w, h = A4
 
     c.setFont("Helvetica-Bold", 16)
@@ -170,31 +200,18 @@ def generate_pdf():
 
     lines = [
         f"Name: {selected_profile}",
-        "Gender: Male",
-        "Blood Group: O+",
-        "Nationality: Indian",
-        "",
-        "Address:",
-        "Flat No. A-412, Manglam Anchal",
-        "Kalwar Road, Jhotwara",
-        "Jaipur – 302012",
-        "",
-        "Education:",
-        "JPHS, Chitrakoot (CBSE)",
-        "Class: 4th-C",
-        "",
-        "Contact:",
-        f"Email: {email}",
+        f"Mobile: {profile['mobile']}",
+        f"Email: {profile['email']}",
     ]
 
     for line in lines:
         c.drawString(60, y, line)
-        y -= 18
+        y -= 20
 
     c.showPage()
     c.save()
-    buffer.seek(0)
-    return buffer
+    buf.seek(0)
+    return buf
 
 st.download_button(
     "📄 Download Profile PDF",
@@ -206,4 +223,4 @@ st.download_button(
 # -------------------------------------------------
 # FOOTER
 # -------------------------------------------------
-st.caption("Blurred Tile Background • Multi Profile • Streamlit Cloud Ready")
+st.caption("QR • WhatsApp • Admin Panel • Gallery | Streamlit Cloud Ready")
