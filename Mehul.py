@@ -25,7 +25,7 @@ bg_images = [
     "images/IMG7.jpeg",
     "images/IMG8.jpeg",
     "images/IMG9.jpeg",
-    "images/IMG10.JPEG",
+    "images/IMG10.jpeg",
 ]
 
 # -------------------------------------------------
