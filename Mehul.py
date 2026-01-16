@@ -1,11 +1,12 @@
 import streamlit as st
+from pathlib import Path
 
 # -------------------------------------------------
 # PAGE CONFIG
 # -------------------------------------------------
 st.set_page_config(
-    page_title="Yadav DB – D Form",
-    page_icon="📄",
+    page_title="Mehul Yadav Page",
+    page_icon="🧾",
     layout="centered"
 )
 
@@ -14,69 +15,73 @@ st.set_page_config(
 # -------------------------------------------------
 st.markdown(
     """
-    <h2 style="text-align:center;">📄 D FORM – PERSONAL DETAILS</h2>
+    <h2 style="text-align:center;">🧾 Mehul Yadav – Personal Profile</h2>
+    <p style="text-align:center;">(Shareable Personal Information Page)</p>
     <hr>
     """,
     unsafe_allow_html=True
 )
 
 # -------------------------------------------------
-# PHOTO + BASIC INFO
+# IMAGE SAFE LOADER
 # -------------------------------------------------
+img_path = Path("assets/mehul.jpg")
+
 col1, col2 = st.columns([1, 2])
 
 with col1:
-    st.image("assets/photo.jpg", width=160, caption="Photograph")
+    if img_path.exists():
+        st.image(str(img_path), width=160, caption="Mehul Yadav")
+    else:
+        st.warning("⚠ Image not found. Please check file name & path.")
 
 with col2:
     st.markdown("""
-    **Full Name:** Yadav Singh  
-    **Father’s Name:** Ram Singh Yadav  
-    **Date of Birth:** 12-05-1995  
-    **Gender:** Male  
-    **Blood Group:** O+  
-    **Nationality:** Indian  
-    """)
-
-st.divider()
-
-# -------------------------------------------------
-# ADDRESS DETAILS
-# -------------------------------------------------
-st.markdown("### 🏡 Permanent Address")
-
-st.markdown("""
-House No: 21  
-Village: Rampur  
-District: Jaipur  
-State: Rajasthan  
-PIN Code: 302012  
+**Full Name:** Mehul Yadav  
+**Father’s Name:** —  
+**Date of Birth:** —  
+**Gender:** Male  
+**Blood Group:** O+  
+**Nationality:** Indian  
 """)
 
 st.divider()
 
 # -------------------------------------------------
-# EDUCATION DETAILS
+# ADDRESS
 # -------------------------------------------------
-st.markdown("### 🏫 Educational Details")
+st.markdown("### 🏡 Home Address")
 
 st.markdown("""
-**School Name:** ABC Senior Secondary School  
-**Board:** CBSE  
-**Highest Qualification:** 12th Pass  
+Village / City: —  
+District: —  
+State: —  
+PIN Code: —  
 """)
 
 st.divider()
 
 # -------------------------------------------------
-# EMERGENCY DETAILS
+# EDUCATION
 # -------------------------------------------------
-st.markdown("### 🚑 Emergency Contact")
+st.markdown("### 🏫 Education")
 
 st.markdown("""
-**Contact Name:** Suresh Yadav  
-**Relation:** Brother  
-**Mobile:** +91 80039 94518  
+School Name: —  
+Board: —  
+Class / Qualification: —  
+""")
+
+st.divider()
+
+# -------------------------------------------------
+# CONTACT
+# -------------------------------------------------
+st.markdown("### 📞 Contact Information")
+
+st.markdown("""
+Mobile: —  
+Email: —  
 """)
 
 st.divider()
@@ -87,25 +92,12 @@ st.divider()
 st.markdown("### 📌 Declaration")
 
 st.markdown("""
-I hereby declare that the above information is true and correct to the best of my knowledge.
+This page is created for sharing basic personal information with friends.
 """)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # -------------------------------------------------
-# SIGNATURE
-# -------------------------------------------------
-col3, col4 = st.columns(2)
-
-with col3:
-    st.markdown("**Place:** Jaipur")
-
-with col4:
-    st.markdown("**Signature:** ____________")
-
-st.markdown("<hr>", unsafe_allow_html=True)
-
-# -------------------------------------------------
 # FOOTER
 # -------------------------------------------------
-st.caption("Yadav DB | Official Record | Streamlit Cloud Ready")
+st.caption("Created using Streamlit | Shareable Profile Page")
