@@ -1,6 +1,6 @@
 import streamlit as st
-import time
 from pathlib import Path
+from streamlit_autorefresh import st_autorefresh
 
 # -------------------------------------------------
 # PAGE CONFIG
@@ -29,18 +29,16 @@ bg_images = [
 ]
 
 # -------------------------------------------------
-# BACKGROUND SLIDESHOW LOGIC
+# BACKGROUND SLIDESHOW STATE
 # -------------------------------------------------
 if "bg_index" not in st.session_state:
     st.session_state.bg_index = 0
 
 bg_img = bg_images[st.session_state.bg_index % len(bg_images)]
-
 st.session_state.bg_index += 1
 
-# Auto refresh every 4 seconds
-time.sleep(400)
-st.rerun()
+# Auto refresh every 4 seconds (SAFE METHOD)
+st_autorefresh(interval=4000, key="bg_refresh")
 
 # -------------------------------------------------
 # BACKGROUND CSS
@@ -55,11 +53,12 @@ st.markdown(
         background-repeat: no-repeat;
     }}
     .card {{
-        background: rgba(255,255,255,0.85);
+        background: rgba(255, 255, 255, 0.88);
         padding: 25px;
         border-radius: 15px;
         max-width: 900px;
         margin: auto;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }}
     </style>
     """,
@@ -82,7 +81,7 @@ with col1:
     if profile_img.exists():
         st.image(str(profile_img), width=180, caption="Mehul Yadav")
     else:
-        st.warning("Profile image not found")
+        st.warning("⚠ Profile image not found")
 
 with col2:
     st.markdown("""
@@ -94,29 +93,38 @@ with col2:
 
 st.divider()
 
+# -------------------------------------------------
+# ADDRESS
+# -------------------------------------------------
 st.markdown("### 🏡 Home Address")
 st.markdown("""
 Village / City: —  
-District: —  JaiPur
-State: —  Raasthan
-PIN Code: —  302012
+District: Jaipur  
+State: Rajasthan  
+PIN Code: 302012  
 """)
 
 st.divider()
 
+# -------------------------------------------------
+# EDUCATION
+# -------------------------------------------------
 st.markdown("### 🏫 Education")
 st.markdown("""
-School Name: —  JPHS, Chitrakoot
-Board: —  CBSE
-Qualification: —  4Th-C
+School Name: JPHS, Chitrakoot  
+Board: CBSE  
+Qualification: 4th-C  
 """)
 
 st.divider()
 
+# -------------------------------------------------
+# CONTACT
+# -------------------------------------------------
 st.markdown("### 📞 Contact")
 st.markdown("""
-Mobile: —  9829004534
-Email: —  yadav.gauravsingh@gmail.com
+Mobile: 9829004534  
+Email: yadav.gauravsingh@gmail.com  
 """)
 
 st.markdown("</div>", unsafe_allow_html=True)
