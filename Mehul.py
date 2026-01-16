@@ -103,7 +103,7 @@ st.divider()
 # -------------------------------------------------
 st.markdown("### 🏡 Home Address")
 st.markdown("""
-Flat Apartment: —  FlatNo. A-a412, bManglamc Anhchial,Kalwar Road
+Flat Apartment: —  Flat No. A-412, Manglam Anhchal,Kalwar Road
 Village / City: —  Jhotwara
 District: Jaipur  
 State: Rajasthan  
@@ -130,7 +130,7 @@ st.divider()
 st.markdown("### 📞 Contact")
 st.markdown("""
 Mobile: 9829004534  
-Email: yadav.gauravsingh@gmail.com  
+Email: mehul19823.20@jphschool.com
 """)
 
 st.markdown("</div>", unsafe_allow_html=True)
