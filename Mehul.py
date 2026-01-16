@@ -28,15 +28,19 @@ bg_images = [
 ]
 
 # -------------------------------------------------
-# BACKGROUND ROTATION (SAFE)
+# SESSION STATE INIT
 # -------------------------------------------------
 if "bg_index" not in st.session_state:
     st.session_state.bg_index = 0
 
-bg_img = bg_images[st.session_state.bg_index % len(bg_images)]
+# -------------------------------------------------
+# BUTTON → CHANGE BACKGROUND
+# -------------------------------------------------
+if st.button("🔄 Change Background"):
+    st.session_state.bg_index = (st.session_state.bg_index + 1) % len(bg_images)
 
-# advance index ONLY on user interaction or reload
-st.session_state.bg_index = (st.session_state.bg_index + 1) % len(bg_images)
+# Current background
+bg_img = bg_images[st.session_state.bg_index]
 
 # -------------------------------------------------
 # BACKGROUND CSS
@@ -62,13 +66,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-# -------------------------------------------------
-# MANUAL BACKGROUND CHANGE BUTTON (CLOUD SAFE)
-# -------------------------------------------------
-st.markdown("<br>", unsafe_allow_html=True)
-if st.button("🔄 Change Background"):
-    st.rerun()
 
 # -------------------------------------------------
 # PROFILE CARD
@@ -103,8 +100,8 @@ st.divider()
 # -------------------------------------------------
 st.markdown("### 🏡 Home Address")
 st.markdown("""
-Flat Apartment: —  Flat No. A-412, Manglam Anhchal,Kalwar Road
-Village / City: —  Jhotwara
+Flat Apartment: Flat No. A-412, Manglam Anchal, Kalwar Road  
+City: Jhotwara  
 District: Jaipur  
 State: Rajasthan  
 PIN Code: 302012  
@@ -130,7 +127,7 @@ st.divider()
 st.markdown("### 📞 Contact")
 st.markdown("""
 Mobile: 9829004534  
-Email: mehul19823.20@jphschool.com
+Email: mehul19823.20@jphschool.com  
 """)
 
 st.markdown("</div>", unsafe_allow_html=True)
