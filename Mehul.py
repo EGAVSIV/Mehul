@@ -13,7 +13,7 @@ st.set_page_config(
 # -------------------------------------------------
 # IMAGE PATHS
 # -------------------------------------------------
-profile_img = Path("images/IMG1.jpeg")
+profile_img = Path("images/IMG7.jpeg")
 
 bg_images = [
     "images/IMG2.jpeg",
