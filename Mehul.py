@@ -1,6 +1,5 @@
 import streamlit as st
 from pathlib import Path
-import random
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
@@ -19,62 +18,48 @@ st.set_page_config(
 # -------------------------------------------------
 profile_img = Path("images/IMG7.jpeg")
 
-bg_images = [
+tile_images = [
     "images/IMG2.jpeg",
     "images/IMG3.jpeg",
     "images/IMG4.jpeg",
     "images/IMG5.jpeg",
     "images/IMG6.jpeg",
-    "images/IMG7.jpeg",
     "images/IMG8.jpeg",
     "images/IMG9.jpeg",
     "images/IMG10.jpeg",
 ]
 
-# -------------------------------------------------
-# SESSION STATE
-# -------------------------------------------------
-if "bg_img" not in st.session_state:
-    st.session_state.bg_img = random.choice(bg_images)
+# Create CSS background using multiple images
+bg_css = ", ".join([f'url("{img}")' for img in tile_images])
 
 # -------------------------------------------------
-# BUTTONS
-# -------------------------------------------------
-col_btn1, col_btn2 = st.columns(2)
-
-with col_btn1:
-    if st.button("🔁 Random Background"):
-        st.session_state.bg_img = random.choice(bg_images)
-
-# -------------------------------------------------
-# BACKGROUND + FADE ANIMATION + MOBILE CSS
+# BACKGROUND TILE CSS
 # -------------------------------------------------
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("{st.session_state.bg_img}");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        background-image: {bg_css};
+        background-size: 250px 250px;
+        background-repeat: repeat;
         animation: fadeIn 1.2s ease-in-out;
     }}
 
     @keyframes fadeIn {{
-        from {{ opacity: 0.3; }}
+        from {{ opacity: 0.2; }}
         to {{ opacity: 1; }}
     }}
 
     .card {{
-        background: rgba(255,255,255,0.9);
+        background: rgba(255,255,255,0.92);
         padding: 25px;
         border-radius: 15px;
         max-width: 900px;
         margin: auto;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }}
 
-    /* 📱 Mobile Layout */
+    /* 📱 Mobile */
     @media (max-width: 768px) {{
         .card {{
             padding: 18px;
@@ -112,6 +97,9 @@ with col2:
 
 st.divider()
 
+# -------------------------------------------------
+# ADDRESS
+# -------------------------------------------------
 st.markdown("### 🏡 Home Address")
 st.markdown("""
 Flat No. A-412, Manglam Anchal  
@@ -121,6 +109,9 @@ Jaipur, Rajasthan – 302012
 
 st.divider()
 
+# -------------------------------------------------
+# EDUCATION
+# -------------------------------------------------
 st.markdown("### 🏫 Education")
 st.markdown("""
 School Name: JPHS, Chitrakoot  
@@ -130,6 +121,9 @@ Class: 4th-C
 
 st.divider()
 
+# -------------------------------------------------
+# CONTACT
+# -------------------------------------------------
 st.markdown("### 📞 Contact")
 st.markdown("""
 Mobile: 9829004534  
@@ -144,13 +138,13 @@ st.markdown("</div>", unsafe_allow_html=True)
 def generate_pdf():
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
-    width, height = A4
+    w, h = A4
 
     c.setFont("Helvetica-Bold", 16)
-    c.drawCentredString(width / 2, height - 50, "Mehul Yadav – Personal Profile")
+    c.drawCentredString(w / 2, h - 50, "Mehul Yadav – Personal Profile")
 
     c.setFont("Helvetica", 12)
-    y = height - 100
+    y = h - 100
 
     lines = [
         "Full Name: Mehul Yadav",
@@ -181,17 +175,14 @@ def generate_pdf():
     buffer.seek(0)
     return buffer
 
-pdf_bytes = generate_pdf()
-
-with col_btn2:
-    st.download_button(
-        "📄 Download PDF",
-        data=pdf_bytes,
-        file_name="Mehul_Yadav_Profile.pdf",
-        mime="application/pdf"
-    )
+st.download_button(
+    "📄 Download Profile PDF",
+    data=generate_pdf(),
+    file_name="Mehul_Yadav_Profile.pdf",
+    mime="application/pdf"
+)
 
 # -------------------------------------------------
 # FOOTER
 # -------------------------------------------------
-st.caption("Shareable Profile Page | Mobile Friendly | Streamlit Cloud Ready")
+st.caption("Tiled Image Background | Shareable Profile Page | Streamlit Cloud Ready")
